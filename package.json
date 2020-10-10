@@ -1,10 +1,10 @@
 {
-  "name": "testnet-faucet2",
+  "name": "dust-faucet",
   "version": "1.0.0",
-  "description": "A BCH testnet faucet",
-  "main": "testnet-faucet.js",
+  "description": "A BCH mainnet dust faucet",
+  "main": "faucet.js",
   "scripts": {
-    "start": "node testnet-faucet.js",
+    "start": "node faucet.js",
     "test": "export FAUCET_ENV=test && npm run prep-test && nyc --reporter=text --timeout 15000 mocha --exit test/unit/",
     "test:integration": "export FAUCET_ENV=test && npm run prep-test && mocha --exit --timeout=30000 test/integration/",
     "lint": "standard --env mocha --fix",
@@ -16,12 +16,12 @@
   "author": "Chris Troutner <chris.troutner@gmail.com>",
   "license": "MIT",
   "apidoc": {
-    "title": "testnet-faucet",
+    "title": "faucet",
     "url": "localhost:5000"
   },
-  "repository": "christroutner/testnet-faucet2",
+  "repository": "christroutner/dust-faucet",
   "dependencies": {
-    "@chris.troutner/bch-js": "^2.3.11",
+    "@psf/bch-js": "^3.6.5",
     "apidoc": "^0.23.0",
     "axios": "^0.19.2",
     "bcryptjs": "^2.4.3",
