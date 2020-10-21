@@ -19,10 +19,10 @@ const blackList = [
 ]
 
 // Track the total amount sent within an hour.
-let sentTotal = 0
-setInterval(function () {
-  sentTotal = 0
-}, 60000 * 60) // 1 hour
+// let sentTotal = 0
+// setInterval(function () {
+//   sentTotal = 0
+// }, 60000 * 60) // 1 hour
 
 class CoinsController {
   constructor () {
@@ -89,61 +89,61 @@ class CoinsController {
 
       // Allow sending to itself, to test the system. All other addresses use
       // IP and address filtering to prevent abuse of the faucet.
-      if (bchAddr !== _this.config.appAddress) {
-        // Check if IP Address already exists in the database.
-        const ipIsKnown = await _this.seenIPAddress(ip)
-        // const ipIsKnown = false // Used for testing.
+      // if (bchAddr !== _this.config.appAddress) {
+      // Check if IP Address already exists in the database.
+      // const ipIsKnown = await _this.seenIPAddress(ip)
+      // const ipIsKnown = false // Used for testing.
 
-        // Check if the BCH address already exists in the database.
-        const bchIsKnown = await _this.checkBchAddress(bchAddr)
-        // const bchIsKnown = false
+      // Check if the BCH address already exists in the database.
+      // const bchIsKnown = await _this.checkBchAddress(bchAddr)
+      // const bchIsKnown = false
 
-        // If either are true, deny request.
-        if (ipIsKnown || bchIsKnown) {
-          ctx.body = {
-            success: false,
-            message: 'IP or Address found in database'
-          }
-          wlogger.info('Rejected due to repeat BCH or IP address.')
-          return
-        }
+      // If either are true, deny request.
+      // if (ipIsKnown || bchIsKnown) {
+      //   ctx.body = {
+      //     success: false,
+      //     message: 'IP or Address found in database'
+      //   }
+      //   wlogger.info('Rejected due to repeat BCH or IP address.')
+      //   return
+      // }
 
-        // Reject if the request does not originate from the bitcoin.com website.
-        // const goodOrigin = checkOrigin(origin)
-        const goodOrigin = true
-        if (!goodOrigin) {
-          ctx.body = {
-            success: false,
-            message: 'Request does not originate from bitcoin.com website.'
-          }
-          wlogger.info('Rejected due to bad origin.')
-          return
-        }
+      // Reject if the request does not originate from the bitcoin.com website.
+      // const goodOrigin = checkOrigin(origin)
+      // const goodOrigin = true
+      // if (!goodOrigin) {
+      //   ctx.body = {
+      //     success: false,
+      //     message: 'Request does not originate from bitcoin.com website.'
+      //   }
+      //   wlogger.info('Rejected due to bad origin.')
+      //   return
+      // }
 
-        // Reject too much BCH is being drained over the course of an hour.
-        if (sentTotal > _this.config.bchPerHour) {
-          ctx.body = {
-            success: false,
-            message: 'Too much tBCH being drained. Wait an hour and try again.'
-          }
-          wlogger.info('Rejected due to too much tBCH being requested.')
-          return
-        }
+      // Reject too much BCH is being drained over the course of an hour.
+      // if (sentTotal > _this.config.bchPerHour) {
+      //   ctx.body = {
+      //     success: false,
+      //     message: 'Too much tBCH being drained. Wait an hour and try again.'
+      //   }
+      //   wlogger.info('Rejected due to too much tBCH being requested.')
+      //   return
+      // }
 
-        // Reject if IP is in the blacklisted IP range.
-        // for (let i = 0; i < blackList.length; i++) {
-        //   const elem = blackList[i]
-        //
-        //   if (ip.indexOf(elem) > -1) {
-        //     ctx.body = {
-        //       success: false,
-        //       message: "IP address has been black listed."
-        //     }
-        //     console.log(`Rejected due to IP in black list.`)
-        //     return
-        //   }
-        // }
-      }
+      // Reject if IP is in the blacklisted IP range.
+      // for (let i = 0; i < blackList.length; i++) {
+      //   const elem = blackList[i]
+      //
+      //   if (ip.indexOf(elem) > -1) {
+      //     ctx.body = {
+      //       success: false,
+      //       message: "IP address has been black listed."
+      //     }
+      //     console.log(`Rejected due to IP in black list.`)
+      //     return
+      //   }
+      // }
+      // }
 
       // Otherwise send the payment.
       const hex = await _this.wallet.sendBCH(bchAddr)
@@ -167,7 +167,7 @@ class CoinsController {
       }
 
       // Track the amount of BCH sent.
-      sentTotal += config.satsToSend
+      // sentTotal += config.satsToSend
 
       // Add IP and BCH address to DB.
       await _this.saveIp(ip)
@@ -176,7 +176,7 @@ class CoinsController {
       ctx.body = {
         success: true,
         txid: txid,
-        message: `tBCH sent via TXID: ${txid}`
+        message: `BCH dust sent via TXID: ${txid}`
       }
     } catch (err) {
       wlogger.error('Error in coins/controller.js/getCoins():', err)

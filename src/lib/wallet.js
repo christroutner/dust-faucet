@@ -8,7 +8,7 @@ const config = require('../../config')
 const State = require('./state')
 const wlogger = require('./wlogger')
 
-const BCHJS = require('@chris.troutner/bch-js')
+const BCHJS = require('@psf/bch-js')
 
 let _this
 
@@ -32,7 +32,7 @@ class Wallet {
       }
 
       _this.state = new State()
-      _this.bchjs = new BCHJS({ restURL: 'https://tapi.fullstack.cash/v3/' })
+      _this.bchjs = new BCHJS({ restURL: 'https://api.fullstack.cash/v3/' })
     } catch (err) {
       throw new Error('Could not open wallet.json file.')
     }
@@ -76,7 +76,7 @@ class Wallet {
       const rootSeed = await _this.bchjs.Mnemonic.toSeed(mnemonic)
 
       // master HDNode
-      const masterHDNode = _this.bchjs.HDNode.fromSeed(rootSeed, 'testnet') // Testnet
+      const masterHDNode = _this.bchjs.HDNode.fromSeed(rootSeed)
 
       // HDNode of BIP44 account
       const account = _this.bchjs.HDNode.derivePath(
@@ -97,7 +97,7 @@ class Wallet {
       // console.log(`utxo: ${JSON.stringify(utxo, null, 2)}`)
 
       // instance of transaction builder
-      const transactionBuilder = new _this.bchjs.TransactionBuilder('testnet')
+      const transactionBuilder = new _this.bchjs.TransactionBuilder()
 
       const satoshisToSend = AMOUNT_TO_SEND
       const originalAmount = utxo.satoshis
@@ -198,7 +198,7 @@ class Wallet {
       const isCashAddress = _this.bchjs.Address.isCashAddress(bchAddr)
       const isTestnetAddress = _this.bchjs.Address.isTestnetAddress(bchAddr)
 
-      if (isCashAddress && isTestnetAddress) {
+      if (isCashAddress && !isTestnetAddress) {
         return true
       }
 
