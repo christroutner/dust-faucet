@@ -87,6 +87,21 @@ class CoinsController {
 
       wlogger.info(`Requesting IP: ${ip}, Address: ${bchAddr}, origin: ${origin}`)
 
+      const localOrigin = origin.toString().includes('localhost:8000')
+      const isOrigin1 = origin.toString().includes('splitbch.com')
+      const isOrigin2 = origin.toString().includes('splitbch.cash')
+
+      const oneOriginMatch = localOrigin || isOrigin1 || isOrigin2
+
+      if (!oneOriginMatch) {
+        ctx.body = {
+          success: false,
+          message: 'Source originates from non-approved source'
+        }
+        wlogger.info(`Rejected due to origin: ${origin}`)
+        return
+      }
+
       // Allow sending to itself, to test the system. All other addresses use
       // IP and address filtering to prevent abuse of the faucet.
       // if (bchAddr !== _this.config.appAddress) {
