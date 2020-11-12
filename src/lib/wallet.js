@@ -40,7 +40,7 @@ class Wallet {
 
   async getBalance () {
     try {
-      const cashAddr = _this.wallet.cashAddress
+      const cashAddr = _this.wallet.rootAddress
 
       const balanceObj = await _this.bchjs.Blockbook.balance(cashAddr)
       // console.log(`balanceObj: ${JSON.stringify(balanceObj, null, 2)}`)
@@ -81,12 +81,12 @@ class Wallet {
       // HDNode of BIP44 account
       const account = _this.bchjs.HDNode.derivePath(
         masterHDNode,
-        "m/44'/145'/0'"
+        `m/44'/${_this.wallet.derivation}'/0'`
       )
 
       const change = _this.bchjs.HDNode.derivePath(account, '0/0')
 
-      const cashAddress = _this.wallet.cashAddress
+      const cashAddress = _this.wallet.rootAddress
 
       // Query utxos associated with the address from an indexer.
       const utxos = await _this.bchjs.Blockbook.utxo(cashAddress)
@@ -125,7 +125,10 @@ class Wallet {
       // console.log(`remainder: ${remainder}`)
 
       // add output w/ address and amount to send
-      transactionBuilder.addOutput(_this.wallet.legacyAddress, remainder)
+      transactionBuilder.addOutput(
+        _this.bchjs.Address.toLegacyAddress(_this.wallet.rootAddress),
+        remainder
+      )
       transactionBuilder.addOutput(
         _this.bchjs.Address.toLegacyAddress(bchAddr),
         satoshisToSend
