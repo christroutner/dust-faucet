@@ -87,24 +87,25 @@ class Wallet {
       const change = _this.bchjs.HDNode.derivePath(account, '0/0')
 
       const cashAddress = _this.wallet.rootAddress
+      console.log(`cashAddress: ${cashAddress}`)
 
       // Query utxos associated with the address from an indexer.
-      const utxos = await _this.bchjs.Blockbook.utxo(cashAddress)
-      // console.log(`utxos: ${JSON.stringify(utxos, null, 2)}`)
+      const utxos = await _this.bchjs.Electrumx.utxo(cashAddress)
+      console.log(`utxos: ${JSON.stringify(utxos, null, 2)}`)
 
       // Get the biggest UTXO, which is assumed to be spendable.
-      const utxo = _this.findBiggestUtxo(utxos)
-      // console.log(`utxo: ${JSON.stringify(utxo, null, 2)}`)
+      const utxo = _this.findBiggestUtxo(utxos.utxos)
+      console.log(`utxo: ${JSON.stringify(utxo, null, 2)}`)
 
       // instance of transaction builder
       const transactionBuilder = new _this.bchjs.TransactionBuilder()
 
       const satoshisToSend = AMOUNT_TO_SEND
-      const originalAmount = utxo.satoshis
+      const originalAmount = utxo.value
       // console.log(`originalAmount ${originalAmount}`)
 
-      const vout = utxo.vout
-      const txid = utxo.txid
+      const vout = utxo.tx_pos
+      const txid = utxo.tx_hash
 
       // add input with txid and index of vout
       transactionBuilder.addInput(txid, vout)
@@ -182,8 +183,8 @@ class Wallet {
       for (var i = 0; i < utxos.length; i++) {
         const thisUtxo = utxos[i]
 
-        if (thisUtxo.satoshis > largestAmount) {
-          largestAmount = thisUtxo.satoshis
+        if (thisUtxo.value > largestAmount) {
+          largestAmount = thisUtxo.value
           largestIndex = i
         }
       }
