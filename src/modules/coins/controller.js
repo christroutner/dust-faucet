@@ -87,8 +87,8 @@ class CoinsController {
 
       wlogger.info(`Requesting IP: ${ip}, Address: ${bchAddr}, origin: ${origin}`)
 
-      const localOrigin = origin.toString().includes('localhost:8000')
-      // const localOrigin = false
+      // const localOrigin = origin.toString().includes('localhost:8000')
+      const localOrigin = false
       const isOrigin1 = origin.toString().includes('splitbch.com')
       // const isOrigin2 = origin.toString().includes('splitbch.cash')
       const isOrigin2 = false
